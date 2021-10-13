@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-// const { Video } = require("../models/Video");
+const { Video } = require("../models/Video");
 
 const { auth } = require("../middleware/auth");
 const multer =require("multer");
@@ -36,8 +36,17 @@ router.post('/uploadfiles', (req, res) => {
         if(err) {
             return res.json({success: false, err})
         }
-        return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename })
+        return res.status(200).json({ success: true, url: res.req.file.path, fileName: res.req.file.filename })
     })
+})
+
+router.post('/uploadVideo', (req, res) => {
+   //비디오 정보를 저장한다.
+   const video = new Video(req.body);
+   video.save((err, doc)=>{
+       if(err) return res.json({success: false, err})
+       res.status(200).json({success: true})
+   });
 })
 
 router.post('/thumbnail', (req, res) => {
@@ -62,7 +71,7 @@ router.post('/thumbnail', (req, res) => {
     })
     .on('end', function(){
         console.log('Screenshots token');
-        return res.json({success: true, url: filePath, fileDuration: fileDuration });
+        return res.status(200).json({success: true, url: filePath, fileDuration: fileDuration });
     })
     .on('error', function (err) {
         console.log(err);
