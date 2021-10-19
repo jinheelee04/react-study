@@ -21,6 +21,33 @@ router.get("/auth", auth, (req, res) => {
     });
 });
 
+
+
+router.get('/getUsers', (req, res) => {
+    //비디오를 DB에서 가져와서 클라이언트에 보낸다.
+    User.find()
+        .exec((err, datas)=>{
+            if(err) return res.status(400).send(err);
+   
+            const userArr = new Array();
+            for(var i=0; i<datas.length; i++){
+                var user = {
+                    logo: datas[i].image,
+                    name: datas[i].name,
+                    email: datas[i].email,
+                    subdomain: "Manager",
+                    domain: "Organization",
+                    status: "Online",
+                    date: "14/06/21"
+                }
+                userArr.push(user)
+            }
+            res.status(200).json({success:true, users:userArr})
+        });
+    
+ })
+
+
 router.post("/register", (req, res) => {
 
     const user = new User(req.body);
